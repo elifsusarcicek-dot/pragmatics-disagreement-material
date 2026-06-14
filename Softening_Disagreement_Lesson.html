@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Say It Softer — Disagreeing Without Drama</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf7ff;
+  --ink:#241b35;
+  --muted:#7a7088;
+  --line:#e7ddf3;
+  --surface:#ffffff;
+  --grape:#7c3aed;
+  --grape-soft:#ede4ff;
+  --mint:#10b981;
+  --mint-soft:#d6f7ec;
+  --coral:#fb7185;
+  --coral-soft:#ffe3e8;
+  --amber:#f59e0b;
+  --amber-soft:#fff0d4;
+  --sky:#3b82f6;
+  --sky-soft:#e0edff;
+  /* directness scale colours: hot (harsh) -> cool (gentle) */
+  --d1:#ef4444; /* harshest */
+  --d2:#f97316;
+  --d3:#f59e0b;
+  --d4:#22c55e;
+  --d5:#10b981; /* gentlest */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ---------- top bar / stage nav ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(251,247,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 20px}
+.tb-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:var(--grape);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fredoka';font-weight:700;font-size:20px;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.brand-txt b{font-family:'Fredoka';font-weight:600;font-size:18px;display:block;line-height:1.1}
+.brand-txt span{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+.stagebar{display:flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px;flex-wrap:wrap}
+.stage-btn{border:none;background:transparent;color:var(--muted);font-family:'Nunito';font-weight:700;font-size:12.5px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.stage-btn .emo{font-size:15px;line-height:1}
+.stage-btn:hover{color:var(--ink);background:var(--bg)}
+.stage-btn.active{background:var(--grape);color:#fff}
+
+/* ---------- stage shell ---------- */
+.stage{display:none;max-width:1000px;margin:0 auto;padding:30px 20px 70px}
+.stage.active{display:block;animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);background:transparent;padding:0;border-radius:0;margin-bottom:10px;opacity:.6}
+.stage-title{font-family:'Fredoka';font-weight:600;font-size:30px;line-height:1.12;margin-bottom:8px}
+.stage-lead{font-size:15.5px;color:var(--muted);max-width:640px;margin-bottom:26px}
+.stage-lead b{color:var(--ink);font-weight:700}
+
+/* ---------- objective ribbon ---------- */
+.obj{display:flex;align-items:flex-start;gap:12px;background:var(--mint-soft);border:1px solid #b6ebd8;border-radius:14px;padding:14px 16px;margin-bottom:26px}
+.obj .ic{font-size:18px;line-height:1.4}
+.obj p{font-size:13.5px;color:#0c6b4f;font-weight:600}
+.obj b{font-weight:800}
+
+/* =================================================
+   STAGE 1 — THE GROUP CHAT
+   ================================================= */
+.s1-grid{display:grid;grid-template-columns:1fr;gap:26px;align-items:start}
+@media(min-width:860px){.s1-grid{grid-template-columns:1fr 420px;gap:34px}}
+.s1-left{position:sticky;top:90px}
+.phone{max-width:420px;margin:0 auto;background:#fff;border-radius:30px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(60,30,110,.13);overflow:hidden}
+.phone-top{background:var(--grape);color:#fff;padding:16px 18px 14px;display:flex;align-items:center;gap:12px}
+.pt-back{font-size:20px;opacity:.85}
+.pt-ava{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;font-family:'Fredoka'}
+.pt-meta b{display:block;font-family:'Fredoka';font-weight:600;font-size:15px;line-height:1.2}
+.pt-meta span{font-size:11.5px;opacity:.85;font-weight:600}
+.pt-icons{margin-left:auto;display:flex;gap:14px;font-size:16px;opacity:.85}
+.chat{background:linear-gradient(180deg,#f4ecff 0%,#fbf7ff 100%);padding:18px 14px;display:flex;flex-direction:column;gap:12px}
+.daystamp{align-self:center;background:#fff;border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700;padding:3px 12px;border-radius:999px}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:3px}
+.msg .who{font-size:11px;font-weight:800;margin-left:12px}
+.bubble{padding:10px 14px;border-radius:18px;font-size:14px;font-weight:600;line-height:1.45;position:relative}
+.msg.them{align-self:flex-start}
+.msg.them .bubble{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;color:var(--ink)}
+.msg.me{align-self:flex-end}
+.msg.me .who{text-align:right;margin-right:12px;color:var(--grape)}
+.msg.me .bubble{background:var(--grape);color:#fff;border-bottom-right-radius:5px}
+.msg .time{font-size:10px;color:var(--muted);font-weight:700}
+.msg.me .time{text-align:right;margin-right:6px}
+.msg.them .time{margin-left:6px}
+.who.maya{color:#db2777}.who.leo{color:#0891b2}.who.sam{color:#7c3aed}.who.you{color:#7c3aed}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.4px;padding:2px 8px;border-radius:6px;margin-top:5px;text-transform:uppercase}
+
+.setup{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:24px;display:flex;gap:16px;align-items:flex-start}
+.setup .em{font-size:30px;line-height:1}
+.setup h3{font-family:'Fredoka';font-weight:600;font-size:17px;margin-bottom:4px}
+.setup p{font-size:14px;color:var(--muted);font-weight:600}
+
+.firstlook{margin-top:26px;background:var(--sky-soft);border:1px solid #c2dbff;border-radius:14px;padding:16px 18px}
+.firstlook b{font-family:'Fredoka';font-weight:600;color:#1d4ed8;font-size:14.5px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.firstlook p{font-size:13.5px;color:#1e40af;font-weight:600}
+
+/* =================================================
+   STAGE 2 — NOTICE & DISCOVER (drag to rank)
+   ================================================= */
+.discover-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:780px){.discover-grid{grid-template-columns:1fr 230px}}
+.rank-wrap{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+.rank-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.rank-head h3{font-family:'Fredoka';font-weight:600;font-size:16px}
+.rank-instr{font-size:12.5px;color:var(--muted);font-weight:700}
+.cards{display:flex;flex-direction:column;gap:10px}
+.dcard{display:flex;align-items:center;gap:12px;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;cursor:grab;transition:box-shadow .15s,border-color .15s,transform .05s;user-select:none}
+.dcard:active{cursor:grabbing}
+.dcard.dragging{opacity:.45;border-style:dashed}
+.dcard.over{border-color:var(--grape);box-shadow:0 0 0 3px var(--grape-soft)}
+.dc-grip{color:var(--muted);font-size:16px}
+.dc-text{flex:1;font-size:14px;font-weight:700}
+.dc-who{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px}
+.scale-track{display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,var(--d1),var(--d2),var(--d3),var(--d4),var(--d5));border-radius:14px;padding:14px 12px;color:#fff;min-height:200px}
+.scale-track .top,.scale-track .bot{font-family:'Fredoka';font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px}
+.scale-track .mid{font-size:11px;font-weight:700;opacity:.9;text-align:center;writing-mode:horizontal-tb}
+.scale-emoji{font-size:20px}
+.checkrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{font-family:'Nunito';font-weight:800;font-size:13px;border:none;border-radius:11px;padding:10px 18px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:var(--grape);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.btn-primary:hover{filter:brightness(1.07)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--grape);color:var(--grape)}
+.rank-result{margin-top:14px;font-size:13.5px;font-weight:700;border-radius:12px;padding:12px 14px;display:none}
+.rank-result.show{display:block;animation:pop .25s ease}
+.rank-result.win{background:var(--mint-soft);color:#0c6b4f;border:1px solid #b6ebd8}
+.rank-result.miss{background:var(--amber-soft);color:#92500a;border:1px solid #f6d58a}
+
+.discover-q{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.discover-q h4{font-family:'Fredoka';font-weight:600;font-size:14.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.qitem{font-size:13px;font-weight:700;color:var(--muted);padding:9px 0;border-bottom:1px dashed var(--line);display:flex;gap:9px}
+.qitem:last-child{border:none}
+.qitem .dot{color:var(--grape);font-weight:900}
+
+/* reveal box (metapragmatic explanation) */
+.reveal{margin-top:26px;border-radius:18px;border:1px solid var(--line);overflow:hidden;background:#fff}
+.reveal-btn{width:100%;text-align:left;background:var(--ink);color:#fff;border:none;padding:16px 20px;font-family:'Fredoka';font-weight:600;font-size:15.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.reveal-btn .chev{transition:.25s}
+.reveal.open .reveal-btn .chev{transform:rotate(180deg)}
+.reveal-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.reveal.open .reveal-body{max-height:900px}
+.reveal-inner{padding:20px 22px}
+.concept{display:flex;gap:14px;margin-bottom:16px}
+.concept:last-child{margin-bottom:0}
+.concept .badge{flex-shrink:0;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.concept h5{font-family:'Fredoka';font-weight:600;font-size:15px;margin-bottom:3px}
+.concept p{font-size:13.5px;color:var(--muted);font-weight:600}
+.concept p b{color:var(--ink)}
+
+/* =================================================
+   STAGE 3 — GUIDED PRACTICE
+   ================================================= */
+.toolkit{background:linear-gradient(135deg,#fff,var(--grape-soft));border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:24px}
+.toolkit h3{font-family:'Fredoka';font-weight:600;font-size:16px;margin-bottom:4px}
+.toolkit>p{font-size:13.5px;color:var(--muted);font-weight:600;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px}
+.chip small{font-size:10.5px;color:var(--muted);font-weight:700}
+
+.exblock{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:20px}
+.exblock h4{font-family:'Fredoka';font-weight:600;font-size:15px;margin-bottom:3px;display:flex;align-items:center;gap:9px}
+.ex-sub{font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:16px}
+.ex-num{width:26px;height:26px;border-radius:9px;background:var(--grape-soft);color:var(--grape);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+
+/* match exercise */
+.harsh-line{display:flex;align-items:center;gap:12px;background:var(--coral-soft);border:1px solid #ffc4cd;border-radius:13px;padding:12px 14px;margin-bottom:14px}
+.harsh-line .lbl{font-size:10px;font-weight:800;letter-spacing:.4px;color:#be123c;text-transform:uppercase}
+.harsh-line .txt{font-size:14.5px;font-weight:800;color:#9f1239}
+.builder{display:flex;flex-direction:column;gap:12px}
+.build-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.slot{border:1.5px dashed var(--grape);background:var(--grape-soft);border-radius:9px;padding:6px 10px;min-width:130px;font-size:13px;font-weight:800;color:var(--grape);text-align:center;cursor:pointer;transition:.12s}
+.slot.filled{border-style:solid;background:#fff;color:var(--ink)}
+.opt-pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.opt{background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;transition:.12s}
+.opt:hover{border-color:var(--grape);color:var(--grape)}
+.opt.used{opacity:.35;pointer-events:none}
+.softpreview{margin-top:16px;background:var(--mint-soft);border:1px solid #b6ebd8;border-radius:13px;padding:14px 16px;display:none}
+.softpreview.show{display:block;animation:pop .25s ease}
+.softpreview .lbl{font-size:10px;font-weight:800;letter-spacing:.4px;color:#0c6b4f;text-transform:uppercase}
+.softpreview .txt{font-size:15px;font-weight:800;color:#065f46;margin-top:3px}
+
+/* choose-best (SJT) */
+.sjt{margin-top:4px}
+.sjt-ctx{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:12px 15px;font-size:13.5px;font-weight:700;margin-bottom:14px;display:flex;gap:10px}
+.sjt-ctx .pwr{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--grape);background:var(--grape-soft);padding:3px 8px;border-radius:6px;white-space:nowrap;height:fit-content}
+.sjt-opt{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:13px 16px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:.13s;display:flex;align-items:center;gap:12px}
+.sjt-opt:hover{border-color:var(--grape)}
+.sjt-opt .mk{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex-shrink:0;transition:.13s}
+.sjt-opt.correct{border-color:var(--mint);background:var(--mint-soft)}
+.sjt-opt.correct .mk{background:var(--mint);border-color:var(--mint)}
+.sjt-opt.wrong{border-color:var(--coral);background:var(--coral-soft)}
+.sjt-fb{font-size:13px;font-weight:700;border-radius:11px;padding:11px 14px;margin-top:4px;display:none}
+.sjt-fb.show{display:block;animation:pop .25s ease}
+.sjt-fb.good{background:var(--mint-soft);color:#0c6b4f}
+.sjt-fb.bad{background:var(--amber-soft);color:#92500a}
+
+/* =================================================
+   STAGE 4 — WHEEL OF SCENARIOS
+   ================================================= */
+.wheel-stage{display:grid;grid-template-columns:1fr;gap:26px;align-items:start}
+@media(min-width:820px){.wheel-stage{grid-template-columns:300px 1fr;gap:32px}}
+.wheel-col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.wheel-wrap{position:relative;width:260px;height:260px}
+.w-ptr{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:22px solid var(--grape);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+#wc{display:block;border-radius:50%;cursor:pointer;box-shadow:0 0 0 5px #fff,0 0 0 6px var(--line),0 12px 30px rgba(60,30,110,.18)}
+.spin-btn{font-family:'Fredoka';font-weight:600;font-size:18px;letter-spacing:1px;background:var(--grape);color:#fff;border:none;border-radius:14px;padding:12px 32px;cursor:pointer;box-shadow:0 5px 16px rgba(124,58,237,.35);transition:.15s}
+.spin-btn:hover{filter:brightness(1.08)}
+.spin-btn:active{transform:scale(.97)}
+.spin-btn:disabled{opacity:.4;cursor:default}
+.wheel-hint{font-size:12px;color:var(--muted);font-weight:600;text-align:center;max-width:240px}
+
+.scenario-out{min-height:300px}
+.scenario-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:300px;background:#fff;border:2px dashed var(--line);border-radius:20px;color:var(--muted)}
+.scenario-empty .se-em{font-size:36px}
+.scenario-empty p{font-size:14px;font-weight:700}
+.scenario-live{display:none}
+.scenario-live.show{display:block;animation:pop .3s ease}
+.scen-banner{border-radius:16px;padding:16px 20px;margin-bottom:16px;color:#fff}
+.scen-banner h3{font-family:'Fredoka';font-weight:600;font-size:19px;margin-bottom:5px}
+.scen-banner p{font-size:13.5px;font-weight:600;opacity:.95}
+
+.rp-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:560px){.rp-grid{grid-template-columns:1fr 1fr}}
+.rpcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.rpcard-top{padding:13px 16px;color:#fff;display:flex;align-items:center;gap:10px}
+.rpcard.a .rpcard-top{background:var(--sky)}
+.rpcard.b .rpcard-top{background:var(--coral)}
+.rpcard-top .role-ava{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Fredoka'}
+.rpcard-top b{font-family:'Fredoka';font-weight:600;font-size:14.5px;display:block;line-height:1.1}
+.rpcard-top span{font-size:11px;opacity:.9;font-weight:700;display:block}
+.rpcard-body{padding:15px 16px}
+.rp-field{margin-bottom:11px}
+.rp-field .k{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.rp-field .v{font-size:13.5px;font-weight:700}
+.rp-context{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.scene-ctx{margin:-6px 0 16px;padding:0 2px}
+.ctx-pill{font-size:10.5px;font-weight:800;padding:5px 10px;border-radius:999px}
+.ctx-pill.p{background:var(--grape-soft);color:var(--grape)}
+.ctx-pill.d{background:var(--sky-soft);color:#1d4ed8}
+.ctx-pill.r{background:var(--coral-soft);color:#be123c}
+.starter{background:var(--bg);border:1px dashed var(--line);border-radius:11px;padding:10px 12px;margin-top:10px;font-size:12.5px;font-weight:700;font-style:italic;color:var(--muted)}
+.scen-tip{background:var(--ink);color:#fff;border-radius:15px;padding:14px 18px;margin-top:16px;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.scen-tip .em{font-size:18px}
+
+/* =================================================
+   STAGE 5 — SELF REFLECTION
+   ================================================= */
+.refl-intro{text-align:center;max-width:560px;margin:0 auto 28px}
+.checklist{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.check{display:flex;align-items:flex-start;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:15px 17px;cursor:pointer;transition:.15s}
+.check:hover{border-color:var(--grape)}
+.check.done{background:var(--mint-soft);border-color:var(--mint)}
+.check .box{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;transition:.15s;margin-top:1px}
+.check.done .box{background:var(--mint);border-color:var(--mint)}
+.check .ctext b{font-family:'Fredoka';font-weight:600;font-size:14.5px;display:block}
+.check .ctext span{font-size:12.5px;color:var(--muted);font-weight:600}
+.exit{max-width:620px;margin:24px auto 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.exit label{font-family:'Fredoka';font-weight:600;font-size:15px;display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.exit textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:'Nunito';font-size:14px;font-weight:600;resize:vertical;min-height:90px;color:var(--ink)}
+.exit textarea:focus{outline:none;border-color:var(--grape)}
+.progress-ring{max-width:620px;margin:0 auto 8px;text-align:center}
+.progress-ring .pct{font-family:'Fredoka';font-weight:600;font-size:13px;color:var(--mint)}
+
+/* footer nav */
+.stage-foot{max-width:1000px;margin:0 auto;padding:0 20px 50px;display:flex;justify-content:space-between;gap:12px}
+.foot-btn{font-family:'Nunito';font-weight:800;font-size:13.5px;border-radius:13px;padding:13px 22px;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:9px}
+.foot-next{background:var(--grape);color:#fff;box-shadow:0 5px 16px rgba(124,58,237,.3)}
+.foot-next:hover{filter:brightness(1.07)}
+.foot-prev{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+.foot-prev:hover{border-color:var(--grape);color:var(--grape)}
+.foot-btn.hidden{visibility:hidden}
+
+@media(max-width:560px){
+  .stage-title{font-size:24px}
+  .stagebar{width:100%;justify-content:center}
+  .stage-btn span.lbl{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="tb-inner">
+    <div class="brand">
+      <div class="brand-txt">
+        <b>Say It Softer</b>
+      </div>
+    </div>
+    <div class="stagebar" id="stagebar">
+      <button class="stage-btn active" onclick="go(0)"><span class="emo">👂</span><span class="lbl">Listen</span></button>
+      <button class="stage-btn" onclick="go(1)"><span class="emo">🔍</span><span class="lbl">Spot</span></button>
+      <button class="stage-btn" onclick="go(2)"><span class="emo">🧰</span><span class="lbl">Build</span></button>
+      <button class="stage-btn" onclick="go(3)"><span class="emo">🎭</span><span class="lbl">Play</span></button>
+      <button class="stage-btn" onclick="go(4)"><span class="emo">🪞</span><span class="lbl">Reflect</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STAGE 1: LISTEN IN ============ -->
+<section class="stage active" id="s0">
+  <span class="eyebrow">Stage 1 · Input</span>
+  <div class="s1-grid">
+    <div class="s1-left">
+      <h1 class="stage-title">First, just listen in 👂</h1>
+      <p class="stage-lead" style="margin-bottom:20px">Four friends are planning a group presentation for <b>tomorrow</b>. Then Maya drops a bombshell. Read how each person disagrees with her — but <b>don't judge yet</b>. Just notice how different they sound.</p>
+
+      <div class="setup">
+        <div class="em">😬</div>
+        <div>
+          <h3>The situation</h3>
+          <p>You and three classmates just finished your science presentation. It's due <b style="color:var(--ink)">tomorrow morning</b>. Everyone is tired. Then, at 9 p.m., <b style="color:var(--coral)">Maya wants to throw it all away and start over.</b></p>
+        </div>
+      </div>
+
+      <div class="firstlook">
+        <b>🔍 Quick thought (don't write yet)</b>
+        <p>Leo and Sam both <em>disagree</em> with Maya. Same message — "let's not rewrite it." So why does one feel friendly and one feel a bit harsh? Keep that question in your head — we'll crack it open next. 👉</p>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="phone-top">
+        <div class="pt-back">‹</div>
+        <div class="pt-ava">G4</div>
+        <div class="pt-meta">
+          <b>Group 4 · Bio Project</b>
+          <span>Maya, Leo, Sam, You</span>
+        </div>
+        <div class="pt-icons"><span>📞</span><span>⋮</span></div>
+      </div>
+      <div class="chat">
+        <div class="daystamp">Today 9:04 PM</div>
+
+        <div class="msg them">
+          <div class="who maya">Maya</div>
+          <div class="bubble">Hey guys… I just looked at our slides again. Honestly I think we should rewrite the whole thing. It feels boring 😅</div>
+          <div class="time">9:04 PM</div>
+        </div>
+
+        <div class="msg me">
+          <div class="who you">You will reply soon…</div>
+          <div class="bubble" style="background:var(--grape-soft);color:var(--grape);border:1.5px dashed var(--grape)">👀 But first — see how the others reacted.</div>
+        </div>
+
+        <div class="msg them">
+          <div class="who leo">Leo</div>
+          <div class="bubble">No. That's a bad idea. We don't have time, Maya.
+          <span class="tag" style="background:var(--coral-soft);color:#be123c">very direct</span></div>
+          <div class="time">9:05 PM</div>
+        </div>
+
+        <div class="msg them">
+          <div class="who sam">Sam</div>
+          <div class="bubble">I see what you mean, but I'm not sure we can redo everything by tomorrow. Maybe we could just fix the boring parts?
+          <span class="tag" style="background:var(--mint-soft);color:#0c6b4f">soft + offers a plan</span></div>
+          <div class="time">9:06 PM</div>
+        </div>
+
+        <div class="msg them">
+          <div class="who maya">Maya</div>
+          <div class="bubble">Hmm ok… what do YOU think? 👇</div>
+          <div class="time">9:07 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 2: NOTICE & DISCOVER ============ -->
+<section class="stage" id="s1">
+  <span class="eyebrow">Stage 2 · Notice &amp; discover</span>
+  <h1 class="stage-title">From harsh to gentle — you decide 🌡️</h1>
+  <p class="stage-lead">Here are five real ways to disagree with Maya. Drag them onto the scale: <b>harshest at the top, gentlest at the bottom</b>. There's a pattern hiding here — your job is to find it.</p>
+
+  <div class="obj">
+    <span class="ic">🎯</span>
+    <p><b>Your mission:</b> rank the lines, then answer the three questions on the right. The pattern you discover is today's big idea.</p>
+  </div>
+
+  <div class="discover-grid">
+    <div class="rank-wrap">
+      <div class="rank-head">
+        <h3>Drag to rank these replies</h3>
+        <span class="rank-instr">harsh ⬆ &nbsp; gentle ⬇</span>
+      </div>
+      <div class="cards" id="cards"><!-- JS fills --></div>
+      <div class="checkrow">
+        <button class="btn btn-primary" onclick="checkRank()">Check my order ✓</button>
+        <button class="btn btn-ghost" onclick="shuffleCards()">Shuffle</button>
+      </div>
+      <div class="rank-result" id="rankResult"></div>
+    </div>
+
+    <div>
+      <div class="scale-track">
+        <div class="top"><span class="scale-emoji">🔥</span> Harshest</div>
+        <div class="mid">feels like an attack</div>
+        <div class="mid">↕</div>
+        <div class="mid">protects the friendship</div>
+        <div class="bot"><span class="scale-emoji">🌿</span> Gentlest</div>
+      </div>
+
+      <div class="discover-q" style="margin-top:16px">
+        <h4>💭 Now think</h4>
+        <div class="qitem"><span class="dot">1</span>Which words make a reply softer? (find at least 3)</div>
+        <div class="qitem"><span class="dot">2</span>The gentle replies are longer. Why might that be?</div>
+        <div class="qitem"><span class="dot">3</span>When is it OK to be direct like Leo? When is it risky?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- metapragmatic reveal -->
+  <div class="reveal" id="reveal">
+    <button class="reveal-btn" onclick="toggleReveal()">
+      <span>🧠 Found a pattern? Tap to check your thinking</span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="reveal-body">
+      <div class="reveal-inner">
+        <div class="concept">
+          <div class="badge" style="background:var(--coral-soft)">🛡️</div>
+          <div>
+            <h5>Disagreeing can feel like an attack</h5>
+            <p>When you tell someone "you're wrong," you bump into their wish to <b>look smart and be respected</b>. Linguists call this their <b>face</b>. Disagreeing is a <b>face-threatening act</b> — it can hurt, even when you're right.</p>
+          </div>
+        </div>
+        <div class="concept">
+          <div class="badge" style="background:var(--mint-soft)">🧸</div>
+          <div>
+            <h5>Softeners are little cushions</h5>
+            <p>Words like <b>maybe, I think, a bit, could we, I see your point but…</b> are <b>softeners</b>. They wrap the disagreement in a cushion so it lands gently instead of hitting hard.</p>
+          </div>
+        </div>
+        <div class="concept">
+          <div class="badge" style="background:var(--sky-soft)">⚖️</div>
+          <div>
+            <h5>How soft? It depends on the situation</h5>
+            <p>Three things decide how careful to be: <b>how close you are</b> to the person, <b>who has more power</b>, and <b>how big the disagreement is</b>. A tiny disagreement with a best friend? Be direct. A big one with a teacher? Cushion it a lot.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 3: BUILD IT ============ -->
+<section class="stage" id="s2">
+  <span class="eyebrow">Stage 3 · Guided practice</span>
+  <h1 class="stage-title">Build a softer reply 🧰</h1>
+  <p class="stage-lead">Now you try — with help. First meet your <b>softener toolkit</b>, then use it to rescue a harsh line and pick the best reply for each situation.</p>
+
+  <div class="toolkit">
+    <h3>🧰 Your softener toolkit</h3>
+    <p>These are the cushions. Mix and match them to take the sting out of a disagreement.</p>
+    <div class="chips">
+      <span class="chip">I think… <small>opinion, not fact</small></span>
+      <span class="chip">Maybe / perhaps <small>not 100% sure</small></span>
+      <span class="chip">a little / a bit <small>shrinks it</small></span>
+      <span class="chip">Could we…? <small>asks, not orders</small></span>
+      <span class="chip">I see your point, but… <small>agrees first</small></span>
+      <span class="chip">What if we…? <small>offers a plan</small></span>
+    </div>
+  </div>
+
+  <!-- Exercise A: builder -->
+  <div class="exblock">
+    <h4><span class="ex-num">A</span> Rescue the harsh line</h4>
+    <p class="ex-sub">Leo's reply is too harsh. Tap softeners to rebuild it into something kinder. There's more than one good answer.</p>
+
+    <div class="harsh-line">
+      <span class="lbl">🔥 Harsh</span>
+      <span class="txt">"No. That's a bad idea. We don't have time."</span>
+    </div>
+
+    <div class="builder">
+      <div class="build-row">
+        <span class="slot" id="slotA" onclick="clearSlot('A')">tap a softener →</span>
+        <span>I'm not sure we should rewrite it,</span>
+      </div>
+      <div class="build-row">
+        <span class="slot" id="slotB" onclick="clearSlot('B')">tap a softener →</span>
+        <span>we don't have</span>
+        <span class="slot" id="slotC" onclick="clearSlot('C')">tap a softener →</span>
+        <span>much time.</span>
+      </div>
+    </div>
+
+    <div class="opt-pool" id="optPool">
+      <span class="opt" data-soft="I see your point, but" data-target="A">I see your point, but</span>
+      <span class="opt" data-soft="To be honest," data-target="A">To be honest,</span>
+      <span class="opt" data-soft="maybe" data-target="B">maybe</span>
+      <span class="opt" data-soft="I think" data-target="B">I think</span>
+      <span class="opt" data-soft="quite a lot of" data-target="C">quite a lot of</span>
+      <span class="opt" data-soft="that much" data-target="C">that much</span>
+    </div>
+
+    <div class="softpreview" id="softPreview">
+      <span class="lbl">🌿 Your softer version</span>
+      <div class="txt" id="softText"></div>
+    </div>
+  </div>
+
+  <!-- Exercise B: SJT -->
+  <div class="exblock">
+    <h4><span class="ex-num">B</span> Pick the best reply for the situation</h4>
+    <p class="ex-sub">Same disagreement, different people. The best reply <b>changes with the situation</b>. Notice the power label.</p>
+
+    <div class="sjt">
+      <div class="sjt-ctx">
+        <span class="pwr">Equal · close friend</span>
+        <span>Your best friend Leo says the pizza place is better. You think the burger place is better. It's just lunch.</span>
+      </div>
+      <button class="sjt-opt" data-good="0" onclick="sjt(this,1,'b1')"><span class="mk"></span>"Hmm, I'd actually go for burgers — but I really don't mind, you pick!"</button>
+      <button class="sjt-opt" data-good="1" onclick="sjt(this,1,'b1')"><span class="mk"></span>"With respect, I must disagree with your suggestion."</button>
+      <div class="sjt-fb" id="fb-b1"></div>
+    </div>
+
+    <div class="sjt" style="margin-top:18px">
+      <div class="sjt-ctx">
+        <span class="pwr" style="background:var(--coral-soft);color:#be123c">Teacher · higher power</span>
+        <span>Your teacher says your essay topic is "too simple." You disagree and want to keep it.</span>
+      </div>
+      <button class="sjt-opt" data-good="1" onclick="sjt(this,1,'b2')"><span class="mk"></span>"I see what you mean, but could I explain why I chose it? I think it has more to it than it seems."</button>
+      <button class="sjt-opt" data-good="0" onclick="sjt(this,1,'b2')"><span class="mk"></span>"No, you're wrong. My topic is good."</button>
+      <div class="sjt-fb" id="fb-b2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 4: ACT IT OUT (WHEEL) ============ -->
+<section class="stage" id="s3">
+  <span class="eyebrow">Stage 4 · Communicative practice</span>
+  <h1 class="stage-title">Spin the situation 🎭</h1>
+  <p class="stage-lead">Time to use it for real, with a partner. Every situation needs a <b>different amount of softening</b>. Spin the wheel to get yours — then play it out loud for about 2 minutes.</p>
+
+  <div class="wheel-stage">
+    <div class="wheel-col">
+      <div class="wheel-wrap">
+        <div class="w-ptr"></div>
+        <canvas id="wc" width="260" height="260" onclick="spinWheel()"></canvas>
+      </div>
+      <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN 🎡</button>
+      <p class="wheel-hint">Each slice = a real situation with its own power, distance &amp; risk.</p>
+    </div>
+
+    <div class="scenario-out" id="scenarioOut">
+      <div class="scenario-empty" id="scenarioEmpty">
+        <div class="se-em">👆</div>
+        <p>Spin to reveal your scene and two role cards.</p>
+      </div>
+      <div class="scenario-live" id="scenarioLive">
+        <div class="scen-banner" id="scenBanner"></div>
+        <div class="rp-context scene-ctx" id="sceneCtx"></div>
+        <div class="rp-grid">
+          <div class="rpcard a">
+            <div class="rpcard-top">
+              <div class="role-ava">A</div>
+              <div><b id="roleAName">Partner A</b><span id="roleARole"></span></div>
+            </div>
+            <div class="rpcard-body">
+              <div class="rp-field"><div class="k">Your goal</div><div class="v" id="roleAGoal"></div></div>
+            </div>
+          </div>
+          <div class="rpcard b">
+            <div class="rpcard-top">
+              <div class="role-ava">B</div>
+              <div><b id="roleBName">Partner B</b><span id="roleBRole"></span></div>
+            </div>
+            <div class="rpcard-body">
+              <div class="rp-field"><div class="k">Your challenge</div><div class="v" id="roleBGoal"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="scen-tip" id="scenTip"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 5: LOOK BACK ============ -->
+<section class="stage" id="s4">
+  <span class="eyebrow">Stage 5 · Self-reflection</span>
+  <h1 class="stage-title">Look back at how you did 🪞</h1>
+  <div class="refl-intro">
+    <p class="stage-lead" style="margin:0 auto">Good speakers check their own words. Think about the role-play you just did and tick what's true. Be honest — this is just for you.</p>
+  </div>
+
+  <div class="progress-ring"><span class="pct" id="reflPct">0 of 4 checked</span></div>
+
+  <div class="checklist" id="checklist">
+    <div class="check" onclick="toggleCheck(this)">
+      <div class="box">✓</div>
+      <div class="ctext"><b>I disagreed clearly</b><span>My partner understood that I didn't agree.</span></div>
+    </div>
+    <div class="check" onclick="toggleCheck(this)">
+      <div class="box">✓</div>
+      <div class="ctext"><b>I used at least one softener</b><span>maybe · I think · I see your point but · could we…</span></div>
+    </div>
+    <div class="check" onclick="toggleCheck(this)">
+      <div class="box">✓</div>
+      <div class="ctext"><b>I matched the situation</b><span>I was softer because the risk was high and Maya is my friend.</span></div>
+    </div>
+    <div class="check" onclick="toggleCheck(this)">
+      <div class="box">✓</div>
+      <div class="ctext"><b>I offered something, not just "no"</b><span>I suggested a smaller plan instead of only refusing.</span></div>
+    </div>
+  </div>
+
+  <div class="exit">
+    <label>✍️ One last thing</label>
+    <p style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px">If you could replay the scene, what is <b>one thing</b> you'd say differently to make it land softer? Write it in your own words.</p>
+    <textarea placeholder="Next time I would say…"></textarea>
+  </div>
+</section>
+
+<!-- ============ FOOTER NAV ============ -->
+<div class="stage-foot">
+  <button class="foot-btn foot-prev hidden" id="prevBtn" onclick="go(cur-1)">‹ Back</button>
+  <button class="foot-btn foot-next" id="nextBtn" onclick="go(cur+1)">Next stage ›</button>
+</div>
+
+<script>
+/* ---------- stage navigation ---------- */
+let cur=0;
+const TOTAL=5;
+function go(i){
+  if(i<0||i>=TOTAL)return;
+  cur=i;
+  document.querySelectorAll('.stage').forEach((s,n)=>s.classList.toggle('active',n===i));
+  document.querySelectorAll('.stage-btn').forEach((b,n)=>b.classList.toggle('active',n===i));
+  document.getElementById('prevBtn').classList.toggle('hidden',i===0);
+  const next=document.getElementById('nextBtn');
+  if(i===TOTAL-1){next.classList.add('hidden');}else{next.classList.remove('hidden');}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- STAGE 2: drag to rank ---------- */
+const RANK_DATA=[
+  {id:'r1',text:'"No. That\u2019s a bad idea. We don\u2019t have time."',who:'Leo',rank:1},
+  {id:'r2',text:'"We can\u2019t rewrite it. It\u2019s too late."',who:'Jess',rank:2},
+  {id:'r3',text:'"I don\u2019t really think we should rewrite the whole thing."',who:'Ben',rank:3},
+  {id:'r4',text:'"I see your point, but maybe we could just fix the boring parts?"',who:'Sam',rank:4},
+  {id:'r5',text:'"I love that you care so much! Could we maybe keep it and just tweak a little?"',who:'Mia',rank:5}
+];
+let cardOrder=[];
+function shuffleCards(){
+  cardOrder=[...RANK_DATA];
+  for(let i=cardOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cardOrder[i],cardOrder[j]]=[cardOrder[j],cardOrder[i]];}
+  renderCards();
+  document.getElementById('rankResult').classList.remove('show');
+}
+function renderCards(){
+  const c=document.getElementById('cards');
+  c.innerHTML='';
+  cardOrder.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='dcard';el.draggable=true;el.dataset.id=d.id;
+    el.innerHTML=`<span class="dc-grip">⠿</span><div class="dc-text">${d.text}<div class="dc-who">${d.who}</div></div>`;
+    c.appendChild(el);
+  });
+  addDnD();
+}
+function addDnD(){
+  let dragEl=null;
+  document.querySelectorAll('.dcard').forEach(card=>{
+    card.addEventListener('dragstart',()=>{dragEl=card;card.classList.add('dragging');});
+    card.addEventListener('dragend',()=>{card.classList.remove('dragging');document.querySelectorAll('.dcard').forEach(c=>c.classList.remove('over'));syncOrder();});
+    card.addEventListener('dragover',e=>{e.preventDefault();const c=document.getElementById('cards');const after=getAfter(c,e.clientY);document.querySelectorAll('.dcard').forEach(x=>x.classList.remove('over'));if(dragEl){if(after==null){c.appendChild(dragEl);}else{c.insertBefore(dragEl,after);}}});
+  });
+  // touch fallback: tap two cards to swap
+  let firstTap=null;
+  document.querySelectorAll('.dcard').forEach(card=>{
+    card.addEventListener('click',()=>{
+      if(!firstTap){firstTap=card;card.classList.add('over');}
+      else if(firstTap===card){card.classList.remove('over');firstTap=null;}
+      else{
+        const c=document.getElementById('cards');
+        const nodes=[...c.children];
+        const i1=nodes.indexOf(firstTap),i2=nodes.indexOf(card);
+        if(i1<i2)c.insertBefore(card,firstTap);else c.insertBefore(card,firstTap.nextSibling);
+        firstTap.classList.remove('over');firstTap=null;syncOrder();
+      }
+    });
+  });
+}
+function getAfter(c,y){
+  const els=[...c.querySelectorAll('.dcard:not(.dragging)')];
+  return els.reduce((closest,child)=>{
+    const box=child.getBoundingClientRect();
+    const offset=y-box.top-box.height/2;
+    if(offset<0&&offset>closest.offset){return{offset:offset,element:child};}
+    else return closest;
+  },{offset:-Infinity}).element;
+}
+function syncOrder(){
+  const ids=[...document.querySelectorAll('.dcard')].map(c=>c.dataset.id);
+  cardOrder=ids.map(id=>RANK_DATA.find(d=>d.id===id));
+}
+function checkRank(){
+  syncOrder();
+  const res=document.getElementById('rankResult');
+  let correct=0;
+  cardOrder.forEach((d,i)=>{if(d.rank===i+1)correct++;});
+  res.classList.add('show');
+  if(correct===5){
+    res.className='rank-result show win';
+    res.innerHTML='🎉 Perfect! You found the pattern: <b>more softeners = gentler reply</b>. The longer, more careful lines protect the friendship. Now open the brain box below 👇';
+  }else if(correct>=3){
+    res.className='rank-result show win';
+    res.innerHTML=`Nearly there — ${correct}/5 in the right spot. You've got the idea: the lines with words like <b>maybe, I think, could we</b> belong near the bottom. Tweak and re-check, then open the brain box 👇`;
+  }else{
+    res.className='rank-result show miss';
+    res.innerHTML=`Hmm, ${correct}/5 so far. Hint: a reply that just says <b>"No, bad idea"</b> is harsh (top). A reply that <b>agrees first</b> and <b>offers a plan</b> is gentle (bottom). Try again!`;
+  }
+}
+function toggleReveal(){document.getElementById('reveal').classList.toggle('open');}
+
+/* ---------- STAGE 3a: softener builder ---------- */
+const slots={A:'',B:'',C:''};
+document.addEventListener('click',e=>{
+  const opt=e.target.closest('.opt');
+  if(!opt)return;
+  const t=opt.dataset.target;
+  if(slots[t])return; // already filled
+  slots[t]=opt.dataset.soft;
+  const slotEl=document.getElementById('slot'+t);
+  slotEl.textContent=opt.dataset.soft;
+  slotEl.classList.add('filled');
+  opt.classList.add('used');
+  renderSoft();
+});
+function clearSlot(t){
+  if(!slots[t])return;
+  const soft=slots[t];slots[t]='';
+  const slotEl=document.getElementById('slot'+t);
+  slotEl.textContent='tap a softener →';slotEl.classList.remove('filled');
+  document.querySelectorAll('.opt').forEach(o=>{if(o.dataset.soft===soft)o.classList.remove('used');});
+  renderSoft();
+}
+function renderSoft(){
+  const prev=document.getElementById('softPreview');
+  if(!slots.A&&!slots.B&&!slots.C){prev.classList.remove('show');return;}
+  const a=slots.A||'___';const b=slots.B||'___';const c=slots.C||'___';
+  document.getElementById('softText').textContent=`"${a} I'm not sure we should rewrite it, we don't have ${b} ${c} much time."`;
+  prev.classList.add('show');
+}
+
+/* ---------- STAGE 3b: SJT ---------- */
+const FB={
+  b1:{good:'Nice — with a close friend over something small, a light, direct reply is perfect. The formal version sounds way too stiff for lunch with a buddy!',
+      bad:'That one\u2019s too formal for a best friend and a tiny choice. Save "with respect, I must disagree" for serious, formal moments. With a close friend, keep it light.'},
+  b2:{good:'Exactly. A teacher has more power, so you cushion it: agree first ("I see what you mean"), then ask politely ("could I explain"). Clear, but respectful.',
+      bad:'Too blunt for a teacher. "No, you\u2019re wrong" threatens their face and sounds rude. With higher power, soften hard: agree first, then ask to explain.'}
+};
+function sjt(btn,_,key){
+  const wrap=btn.closest('.sjt');
+  if(wrap.dataset.done)return;
+  wrap.dataset.done='1';
+  const good=btn.dataset.good==='1';
+  btn.classList.add(good?'correct':'wrong');
+  // also highlight the correct one if user was wrong
+  if(!good){wrap.querySelectorAll('.sjt-opt').forEach(o=>{if(o.dataset.good==='1')o.classList.add('correct');});}
+  const fb=document.getElementById('fb-'+key);
+  fb.className='sjt-fb show '+(good?'good':'bad');
+  fb.textContent=good?FB[key].good:FB[key].bad;
+}
+
+/* ---------- STAGE 4: WHEEL OF SCENARIOS ---------- */
+const SCENARIOS=[
+  {
+    short:'Group project',
+    fill:'#ede4ff', stroke:'#7c3aed', banner:'#7c3aed',
+    title:'🧪 The group project',
+    blurb:'It\u2019s 9 p.m. and the presentation is due tomorrow. Maya wants to rewrite everything.',
+    aName:'You are Maya', aRole:'wants to start over',
+    aGoal:'Convince the group to rewrite the whole presentation tonight. You truly believe it\u2019ll be better.',
+    bName:'You are You', bRole:'disagrees',
+    bGoal:'You don\u2019t want to rewrite it — there\u2019s no time. But Maya is your friend and she\u2019s trying hard. Disagree, but don\u2019t shut her down.',
+    power:'equal', distance:'close', risk:'high (it\u2019s late!)',
+    tip:'Close friend + high stakes → soften a lot, and offer a smaller plan instead of a flat "no".'
+  },
+  {
+    short:'Best friend',
+    fill:'#d6f7ec', stroke:'#10b981', banner:'#10b981',
+    title:'🍔 Lunch with your best friend',
+    blurb:'Your best friend is sure the pizza place is best. You\u2019d rather get burgers. It\u2019s just lunch.',
+    aName:'You are the friend', aRole:'loves pizza',
+    aGoal:'You\u2019re excited about pizza and assume your friend agrees. Push for it a little.',
+    bName:'You are You', bRole:'prefers burgers',
+    bGoal:'You disagree, but it\u2019s tiny and you\u2019re super close. Be light and direct — no need to over-soften.',
+    power:'equal', distance:'very close', risk:'low',
+    tip:'Tiny disagreement + best friend → you can be fairly direct. Over-softening would sound weird here!'
+  },
+  {
+    short:'Team captain',
+    fill:'#fff0d4', stroke:'#f59e0b', banner:'#d97706',
+    title:'⚽ The team captain\u2019s plan',
+    blurb:'Your team captain wants to change the game strategy. You think the old plan was working.',
+    aName:'You are the captain', aRole:'sets the strategy',
+    aGoal:'You\u2019re the captain and you want to switch tactics. You feel responsible for the win.',
+    bName:'You are You', bRole:'disagrees with the captain',
+    bGoal:'You think the old plan worked better. The captain has a bit more authority, so disagree respectfully and give a reason.',
+    power:'captain (a bit higher)', distance:'teammates', risk:'medium',
+    tip:'Slightly higher power → soften more than with a friend. Agree first, then suggest your idea as a question.'
+  },
+  {
+    short:'Teacher',
+    fill:'#ffe3e8', stroke:'#fb7185', banner:'#e11d48',
+    title:'📚 Your teacher\u2019s feedback',
+    blurb:'Your teacher says your essay topic is "too simple" and wants you to change it. You disagree.',
+    aName:'You are the teacher', aRole:'higher power',
+    aGoal:'You think the student\u2019s topic is too basic. You give honest feedback and suggest changing it.',
+    bName:'You are You', bRole:'wants to keep the topic',
+    bGoal:'You believe in your topic. The teacher has real authority, so disagree very politely — agree first, then ask to explain.',
+    power:'teacher (much higher)', distance:'formal', risk:'high',
+    tip:'Big power gap → soften hard. Never a flat "no". Show respect, then make your case as a polite request.'
+  },
+  {
+    short:'New classmate',
+    fill:'#e0edff', stroke:'#3b82f6', banner:'#2563eb',
+    title:'👋 The new classmate',
+    blurb:'A new classmate you barely know says the test is on Friday. You\u2019re pretty sure it\u2019s Thursday.',
+    aName:'You are the new student', aRole:'thinks it\u2019s Friday',
+    aGoal:'You\u2019re new and trying to fit in. You confidently say the test is on Friday.',
+    bName:'You are You', bRole:'thinks it\u2019s Thursday',
+    bGoal:'You think they\u2019re wrong, but you don\u2019t know them well yet. Correct them gently so they don\u2019t feel embarrassed.',
+    power:'equal', distance:'strangers', risk:'medium',
+    tip:'Equal power but you\u2019re not close yet → soften to avoid embarrassing them. Distance matters, not just power.'
+  }
+];
+const W_FILLS=SCENARIOS.map(s=>s.fill);
+const W_STROKES=SCENARIOS.map(s=>s.stroke);
+const W_LABELS=SCENARIOS.map(s=>s.short);
+let wAngle=0,wSpinning=false;
+const wc=document.getElementById('wc');
+const wctx=wc?wc.getContext('2d'):null;
+
+function drawWheel(rot){
+  if(!wctx)return;
+  const cx=130,cy=130,r=124,n=SCENARIOS.length,sl=(2*Math.PI)/n;
+  wctx.clearRect(0,0,260,260);
+  for(let i=0;i<n;i++){
+    const s=rot+i*sl-Math.PI/2,e=s+sl;
+    wctx.beginPath();wctx.moveTo(cx,cy);wctx.arc(cx,cy,r,s,e);wctx.closePath();
+    wctx.fillStyle=W_FILLS[i];wctx.fill();
+    wctx.strokeStyle='#fff';wctx.lineWidth=3;wctx.stroke();
+    wctx.save();wctx.translate(cx,cy);wctx.rotate(s+sl/2);
+    wctx.textAlign='right';wctx.fillStyle=W_STROKES[i];
+    wctx.font='600 13px Fredoka, sans-serif';
+    wctx.fillText(W_LABELS[i],r-14,5);
+    wctx.restore();
+  }
+  wctx.beginPath();wctx.arc(cx,cy,22,0,2*Math.PI);
+  wctx.fillStyle='#fff';wctx.fill();
+  wctx.strokeStyle='#7c3aed';wctx.lineWidth=2;wctx.stroke();
+  wctx.fillStyle='#7c3aed';wctx.font='600 14px Fredoka, sans-serif';wctx.textAlign='center';
+  wctx.fillText('🎯',130,135);
+}
+if(wctx)drawWheel(0);
+
+function spinWheel(){
+  if(wSpinning||!wctx)return;
+  wSpinning=true;
+  document.getElementById('spinBtn').disabled=true;
+  const extra=(4+Math.floor(Math.random()*4))*2*Math.PI;
+  const stop=Math.random()*2*Math.PI;
+  const target=wAngle+extra+stop;
+  const dur=2800+Math.random()*700;
+  const t0=performance.now(),a0=wAngle;
+  const ease=t=>1-Math.pow(1-t,3);
+  (function frame(now){
+    const t=Math.min((now-t0)/dur,1);
+    wAngle=a0+(target-a0)*ease(t);
+    drawWheel(wAngle);
+    if(t<1){requestAnimationFrame(frame);}
+    else{
+      wAngle=target%(2*Math.PI);drawWheel(wAngle);
+      wSpinning=false;document.getElementById('spinBtn').disabled=false;
+      const n=SCENARIOS.length,sl=(2*Math.PI)/n;
+      const norm=((-(wAngle)%(2*Math.PI))+(2*Math.PI))%(2*Math.PI);
+      const idx=Math.floor(norm/sl)%n;
+      revealScenario(idx);
+    }
+  })(performance.now());
+}
+
+function revealScenario(i){
+  const s=SCENARIOS[i];
+  document.getElementById('scenarioEmpty').style.display='none';
+  const live=document.getElementById('scenarioLive');
+  const banner=document.getElementById('scenBanner');
+  banner.style.background=s.banner;
+  banner.innerHTML=`<h3>${s.title}</h3><p>${s.blurb}</p>`;
+  document.getElementById('sceneCtx').innerHTML=
+    `<span class="ctx-pill p">Power: ${s.power}</span>`+
+    `<span class="ctx-pill d">Distance: ${s.distance}</span>`+
+    `<span class="ctx-pill r">Risk: ${s.risk}</span>`;
+  document.getElementById('roleAName').textContent=s.aName;
+  document.getElementById('roleARole').textContent=s.aRole;
+  document.getElementById('roleAGoal').textContent=s.aGoal;
+  document.getElementById('roleBName').textContent=s.bName;
+  document.getElementById('roleBRole').textContent=s.bRole;
+  document.getElementById('roleBGoal').textContent=s.bGoal;
+  document.getElementById('scenTip').innerHTML=`<span class="em">💡</span><span>${s.tip}</span>`;
+  live.classList.remove('show');void live.offsetWidth;live.classList.add('show');
+}
+
+/* ---------- STAGE 5: checklist ---------- */
+function toggleCheck(el){
+  el.classList.toggle('done');
+  const total=document.querySelectorAll('.check').length;
+  const done=document.querySelectorAll('.check.done').length;
+  document.getElementById('reflPct').textContent=`${done} of ${total} checked`;
+}
+
+/* init */
+shuffleCards();
+</script>
+</body>
+</html>
